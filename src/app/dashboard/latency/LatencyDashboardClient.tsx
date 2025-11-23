@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { LatencyGlobe } from "@/modules/latency/components/LatencyGlobe";
 import { LatencySummary } from "@/modules/latency/components/latency-summary";
 import { LatencyFeedTable } from "@/modules/latency/components/latency-feed-table";
+import { ProviderLegend } from "@/modules/latency/components/provider-legend";
 
 export function LatencyDashboardClient() {
   const isClientReady = useClientReady();
@@ -17,6 +18,7 @@ export function LatencyDashboardClient() {
       </div>
       <aside className="space-y-6">
         <HeroCopy />
+        {isClientReady ? <ProviderLegend /> : null}
         {isClientReady ? <LatencyFeedTable /> : <LatencyFeedTableSkeleton />}
       </aside>
     </div>

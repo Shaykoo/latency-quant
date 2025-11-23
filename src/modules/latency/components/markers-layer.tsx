@@ -79,11 +79,13 @@ function Marker({
           }
         }}
       >
-        <sphereGeometry args={[0.045, 16, 16]} />
+        <sphereGeometry args={[0.05, 16, 16]} />
         <meshStandardMaterial
           color={color}
           emissive={emissive}
-          emissiveIntensity={isHovered ? 1.5 : 1}
+          emissiveIntensity={isHovered ? 2 : 1.2}
+          roughness={0.2}
+          metalness={0.8}
         />
       </mesh>
       <Html

@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Stars } from "@react-three/drei";
 import { MarkersLayer } from "./markers-layer";
+import { LatencyConnections } from "./latency-connections";
 import { useLatencyStream } from "../hooks/use-latency-feed";
 
 export function LatencyGlobe() {
@@ -40,6 +41,7 @@ export function LatencyGlobe() {
           />
           <Stars radius={50} depth={20} fade factor={4} saturation={1} />
           <GlobeSurface />
+          <LatencyConnections />
           <MarkersLayer />
         </Suspense>
         <SmoothOrbitControls />

@@ -35,17 +35,20 @@ const useLatencyFeedStore = create<LatencyFeedState>((set) => ({
   setFrame: (frame) =>
     set({
       status: "streaming",
-      markers: frame.samples.map((sample) => ({
-        id: sample.id,
-        position: latLongToCartesian(sample.latitude, sample.longitude, 1.5),
-        color: latencyToColor(sample.latencyMs),
-        emissive: latencyToEmissive(sample.latencyMs),
-        label: `${sample.exchange} • ${sample.latencyMs.toFixed(0)}ms`,
-        latencyMs: sample.latencyMs,
-        exchange: sample.exchange,
-        provider: sample.provider,
-        region: sample.region,
-      })),
+      markers: frame.samples.map((sample) => {
+        const providerColors = providerToColor(sample.provider);
+        return {
+          id: sample.id,
+          position: latLongToCartesian(sample.latitude, sample.longitude, 1.5),
+          color: providerColors.color,
+          emissive: providerColors.emissive,
+          label: `${sample.exchange} • ${sample.latencyMs.toFixed(0)}ms`,
+          latencyMs: sample.latencyMs,
+          exchange: sample.exchange,
+          provider: sample.provider,
+          region: sample.region,
+        };
+      }),
       aggregated: frame.aggregated,
       lastUpdated: new Date(frame.samples[0]?.recordedAt ?? Date.now()),
       errorMessage: null,
@@ -132,17 +135,37 @@ function latLongToCartesian(
   return [x, y, z];
 }
 
-function latencyToColor(latency: number) {
-  if (latency <= 40) return "#22d3ee";
-  if (latency <= 70) return "#38bdf8";
-  if (latency <= 100) return "#fb923c";
-  return "#f87171";
-}
-
-function latencyToEmissive(latency: number) {
-  if (latency <= 40) return "#0e7490";
-  if (latency <= 70) return "#0369a1";
-  if (latency <= 100) return "#b45309";
-  return "#b91c1c";
+/**
+ * Maps cloud providers to their distinct brand colors
+ * Each provider has a unique, recognizable color scheme
+ */
+function providerToColor(provider: string): { color: string; emissive: string } {
+  switch (provider) {
+    case "AWS":
+      return {
+        color: "#FF9900", // AWS Orange
+        emissive: "#CC7700", // Darker orange for glow
+      };
+    case "GCP":
+      return {
+        color: "#4285F4", // Google Cloud Blue
+        emissive: "#1A73E8", // Darker blue for glow
+      };
+    case "Azure":
+      return {
+        color: "#0078D4", // Microsoft Azure Blue
+        emissive: "#005A9E", // Darker blue for glow
+      };
+    case "Fastly":
+      return {
+        color: "#FF6900", // Fastly Orange
+        emissive: "#CC5400", // Darker orange for glow
+      };
+    default:
+      return {
+        color: "#94A3B8", // Neutral slate for unknown providers
+        emissive: "#64748B",
+      };
+  }
 }
 
