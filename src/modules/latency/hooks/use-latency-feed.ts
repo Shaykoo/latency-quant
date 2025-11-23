@@ -11,6 +11,7 @@ type Marker = {
   emissive: string;
   label: string;
   latencyMs: number;
+  exchange: string;
   provider: string;
   region: string;
 };
@@ -41,6 +42,7 @@ const useLatencyFeedStore = create<LatencyFeedState>((set) => ({
         emissive: latencyToEmissive(sample.latencyMs),
         label: `${sample.exchange} • ${sample.latencyMs.toFixed(0)}ms`,
         latencyMs: sample.latencyMs,
+        exchange: sample.exchange,
         provider: sample.provider,
         region: sample.region,
       })),
