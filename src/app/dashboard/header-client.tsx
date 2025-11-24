@@ -71,7 +71,7 @@ export function DashboardHeaderClient() {
             </Link>
           ))}
           <a
-            href="https://github.com/"
+            href="https://github.com/Shaykoo/Latency-Intelligence"
             target="_blank"
             rel="noreferrer"
             className={`hidden rounded-full border px-3 sm:px-4 py-1 sm:py-1.5 transition lg:inline-flex ${
