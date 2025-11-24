@@ -1,4 +1,4 @@
-# Latency Intelligence Dashboard
+# Latency Topology Visualizer
 
 A real-time 3D visualization dashboard for monitoring global exchange latency across multiple cloud providers. Built with Next.js, React Three Fiber, and TypeScript.
 
