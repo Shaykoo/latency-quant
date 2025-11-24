@@ -7,6 +7,7 @@ import { useLatencyFeed } from "../hooks/use-latency-feed";
 import { useProviderFilter } from "../hooks/use-provider-filter";
 import { useDashboardFilters } from "../hooks/use-dashboard-filters";
 import { useVisualizationLayers } from "../hooks/use-visualization-layers";
+import { useTheme } from "../hooks/use-theme";
 import * as THREE from "three";
 
 export const LatencyConnections = memo(function LatencyConnections() {
@@ -107,10 +108,15 @@ function AnimatedConnection({
   color: string;
   latency: number;
 }) {
-  const materialRef = useRef<THREE.LineBasicMaterial>(null);
+  const theme = useTheme((state) => state.theme);
+  const isLightMode = theme === "light";
+  const materialRef = useRef<THREE.MeshBasicMaterial>(null);
   const pulseRef = useRef<THREE.Mesh>(null);
   const labelRef = useRef<THREE.Group>(null);
   const timeRef = useRef(0);
+  
+  // Increase opacity in light mode for better visibility
+  const baseOpacity = isLightMode ? 0.7 : 0.35;
 
   // Create curved path between two points
   const curve = useMemo(() => {
@@ -129,11 +135,12 @@ function AnimatedConnection({
     return curve;
   }, [from, to]);
 
-  // Create geometry for the connection line
-  const geometry = useMemo(() => {
-    const points = curve.getPoints(50);
-    return new THREE.BufferGeometry().setFromPoints(points);
-  }, [curve]);
+  // Create tube geometry for the connection line (more visible than line)
+  // Use thicker tubes in light mode for better visibility
+  const tubeGeometry = useMemo(() => {
+    const radius = isLightMode ? 0.008 : 0.004;
+    return new THREE.TubeGeometry(curve, 50, radius, 8, false);
+  }, [curve, isLightMode]);
 
   // Animate pulse along the connection
   useFrame((state, delta) => {
@@ -152,8 +159,11 @@ function AnimatedConnection({
 
     // Animate line opacity for breathing effect
     if (materialRef.current) {
-      const opacity = 0.25 + Math.sin(timeRef.current * 0.8) * 0.15;
-      materialRef.current.opacity = Math.max(0.2, Math.min(0.5, opacity));
+      const opacityVariation = isLightMode ? 0.2 : 0.15;
+      const minOpacity = isLightMode ? 0.5 : 0.2;
+      const maxOpacity = isLightMode ? 0.8 : 0.5;
+      const opacity = baseOpacity + Math.sin(timeRef.current * 0.8) * opacityVariation;
+      materialRef.current.opacity = Math.max(minOpacity, Math.min(maxOpacity, opacity));
     }
 
     // Position latency label at midpoint
@@ -165,17 +175,15 @@ function AnimatedConnection({
 
   return (
     <group>
-      {/* Main connection arc */}
-      <line>
-        <primitive object={geometry} />
-        <lineBasicMaterial
+      {/* Main connection arc - using tube for better visibility */}
+      <mesh geometry={tubeGeometry}>
+        <meshBasicMaterial
           ref={materialRef}
           color={color}
           transparent
-          opacity={0.35}
-          linewidth={1.5}
+          opacity={baseOpacity}
         />
-      </line>
+      </mesh>
 
       {/* Animated pulse sphere traveling along the connection */}
       <mesh ref={pulseRef}>
