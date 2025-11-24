@@ -17,15 +17,15 @@ export function LatencySummary() {
 
   return (
     <section
-      className={`rounded-3xl border p-4 text-sm shadow-xl ${
+      className={`rounded-3xl border p-3 sm:p-4 text-sm shadow-xl ${
         isDark
           ? "border-slate-800/80 bg-slate-950/50 text-slate-200 shadow-sky-900/20"
           : "border-slate-300/80 bg-slate-50/90 text-slate-800 shadow-sky-900/10"
       }`}
     >
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         <h2
-          className={`text-sm font-semibold uppercase tracking-[0.4em] ${
+          className={`text-xs sm:text-sm font-semibold uppercase tracking-[0.3em] sm:tracking-[0.4em] ${
             isDark ? "text-slate-400" : "text-slate-600"
           }`}
         >
@@ -62,27 +62,27 @@ function StatCard({
 
   return (
     <div
-      className={`rounded-xl border px-3 py-3 shadow-lg ${
+      className={`rounded-xl border px-2 sm:px-3 py-2 sm:py-3 shadow-lg ${
         isDark
           ? "border-slate-800/70 bg-slate-900/60 shadow-slate-950/40"
           : "border-slate-300/70 bg-slate-100/60 shadow-slate-200/40"
       }`}
     >
       <p
-        className={`text-xs uppercase tracking-[0.3em] ${
+        className={`text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] ${
           isDark ? "text-slate-500" : "text-slate-600"
         }`}
       >
         {label}
       </p>
       <p
-        className={`mt-2 text-2xl font-semibold ${
+        className={`mt-1 sm:mt-2 text-lg sm:text-xl md:text-2xl font-semibold ${
           isDark ? "text-slate-50" : "text-slate-900"
         }`}
       >
         {value !== undefined ? value : "—"}
         <span
-          className={`ml-1 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}
+          className={`ml-1 text-xs sm:text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}
         >
           {unit}
         </span>

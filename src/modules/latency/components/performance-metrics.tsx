@@ -40,7 +40,7 @@ export function PerformanceMetrics() {
       <div className="space-y-3">
         {/* System Status */}
         <div
-          className={`rounded-xl border p-4 ${
+          className={`rounded-xl border p-3 sm:p-4 ${
             isDark
               ? "border-slate-800/70 bg-slate-900/40"
               : "border-slate-300/70 bg-slate-100/60"
@@ -49,13 +49,13 @@ export function PerformanceMetrics() {
           <div className="flex items-center justify-between">
             <div>
               <div
-                className={`text-xs font-medium ${
+                className={`text-[10px] sm:text-xs font-medium ${
                   isDark ? "text-slate-400" : "text-slate-700"
                 }`}
               >
                 System Status
               </div>
-              <div className={`mt-1 text-lg font-semibold ${statusColor}`}>
+              <div className={`mt-1 text-base sm:text-lg font-semibold ${statusColor}`}>
                 {status.charAt(0).toUpperCase() + status.slice(1)}
               </div>
             </div>
@@ -69,58 +69,58 @@ export function PerformanceMetrics() {
 
         {/* Latency Statistics */}
         {aggregated && (
-          <div className="grid grid-cols-3 gap-3">
-            <div
-              className={`rounded-xl border p-4 ${
-                isDark
-                  ? "border-slate-800/70 bg-slate-900/40"
-                  : "border-slate-300/70 bg-slate-100/60"
-              }`}
-            >
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
               <div
-                className={`text-xs font-medium ${
-                  isDark ? "text-slate-400" : "text-slate-700"
+                className={`rounded-xl border p-2 sm:p-3 md:p-4 ${
+                  isDark
+                    ? "border-slate-800/70 bg-slate-900/40"
+                    : "border-slate-300/70 bg-slate-100/60"
                 }`}
               >
-                Min Latency
+                <div
+                  className={`text-[10px] sm:text-xs font-medium ${
+                    isDark ? "text-slate-400" : "text-slate-700"
+                  }`}
+                >
+                  Min Latency
+                </div>
+                <div className="mt-1 text-sm sm:text-base md:text-lg font-semibold text-green-500">
+                  {aggregated.min.toFixed(0)}ms
+                </div>
               </div>
-              <div className="mt-1 text-lg font-semibold text-green-500">
-                {aggregated.min.toFixed(0)}ms
-              </div>
-            </div>
             <div
-              className={`rounded-xl border p-4 ${
+              className={`rounded-xl border p-2 sm:p-3 md:p-4 ${
                 isDark
                   ? "border-slate-800/70 bg-slate-900/40"
                   : "border-slate-300/70 bg-slate-100/60"
               }`}
             >
               <div
-                className={`text-xs font-medium ${
+                className={`text-[10px] sm:text-xs font-medium ${
                   isDark ? "text-slate-400" : "text-slate-700"
                 }`}
               >
                 Avg Latency
               </div>
-              <div className="mt-1 text-lg font-semibold text-cyan-600">
+              <div className="mt-1 text-sm sm:text-base md:text-lg font-semibold text-cyan-600">
                 {aggregated.avg.toFixed(1)}ms
               </div>
             </div>
             <div
-              className={`rounded-xl border p-4 ${
+              className={`rounded-xl border p-2 sm:p-3 md:p-4 ${
                 isDark
                   ? "border-slate-800/70 bg-slate-900/40"
                   : "border-slate-300/70 bg-slate-100/60"
               }`}
             >
               <div
-                className={`text-xs font-medium ${
+                className={`text-[10px] sm:text-xs font-medium ${
                   isDark ? "text-slate-400" : "text-slate-700"
                 }`}
               >
                 Max Latency
               </div>
-              <div className="mt-1 text-lg font-semibold text-red-500">
+              <div className="mt-1 text-sm sm:text-base md:text-lg font-semibold text-red-500">
                 {aggregated.max.toFixed(0)}ms
               </div>
             </div>
@@ -128,23 +128,23 @@ export function PerformanceMetrics() {
         )}
 
         {/* System Info */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
           <div
-            className={`rounded-xl border p-4 ${
+            className={`rounded-xl border p-2 sm:p-3 md:p-4 ${
               isDark
                 ? "border-slate-800/70 bg-slate-900/40"
                 : "border-slate-300/70 bg-slate-100/60"
             }`}
           >
             <div
-              className={`text-xs font-medium ${
+              className={`text-[10px] sm:text-xs font-medium ${
                 isDark ? "text-slate-400" : "text-slate-700"
               }`}
             >
               Active Servers
             </div>
             <div
-              className={`mt-1 text-lg font-semibold ${
+              className={`mt-1 text-sm sm:text-base md:text-lg font-semibold ${
                 isDark ? "text-slate-100" : "text-slate-900"
               }`}
             >
@@ -152,21 +152,21 @@ export function PerformanceMetrics() {
             </div>
           </div>
           <div
-            className={`rounded-xl border p-4 ${
+            className={`rounded-xl border p-2 sm:p-3 md:p-4 ${
               isDark
                 ? "border-slate-800/70 bg-slate-900/40"
                 : "border-slate-300/70 bg-slate-100/60"
             }`}
           >
             <div
-              className={`text-xs font-medium ${
+              className={`text-[10px] sm:text-xs font-medium ${
                 isDark ? "text-slate-400" : "text-slate-700"
               }`}
             >
               Uptime
             </div>
             <div
-              className={`mt-1 text-lg font-semibold ${
+              className={`mt-1 text-sm sm:text-base md:text-lg font-semibold ${
                 isDark ? "text-slate-100" : "text-slate-900"
               }`}
             >
@@ -178,24 +178,24 @@ export function PerformanceMetrics() {
         {/* P95 Latency */}
         {aggregated && "p95" in aggregated && (
           <div
-            className={`rounded-xl border p-4 ${
+            className={`rounded-xl border p-2 sm:p-3 md:p-4 ${
               isDark
                 ? "border-slate-800/70 bg-slate-900/40"
                 : "border-slate-300/70 bg-slate-100/60"
             }`}
           >
             <div
-              className={`text-xs font-medium ${
+              className={`text-[10px] sm:text-xs font-medium ${
                 isDark ? "text-slate-400" : "text-slate-700"
               }`}
             >
               P95 Latency
             </div>
-            <div className="mt-1 text-lg font-semibold text-yellow-500">
+            <div className="mt-1 text-sm sm:text-base md:text-lg font-semibold text-yellow-500">
               {aggregated.p95.toFixed(0)}ms
             </div>
             <div
-              className={`mt-1 text-[10px] ${
+              className={`mt-1 text-[9px] sm:text-[10px] ${
                 isDark ? "text-slate-500" : "text-slate-600"
               }`}
             >
@@ -207,21 +207,21 @@ export function PerformanceMetrics() {
         {/* Last Update */}
         {lastUpdated && (
           <div
-            className={`rounded-xl border p-4 ${
+            className={`rounded-xl border p-2 sm:p-3 md:p-4 ${
               isDark
                 ? "border-slate-800/70 bg-slate-900/40"
                 : "border-slate-300/70 bg-slate-100/60"
             }`}
           >
             <div
-              className={`text-xs font-medium ${
+              className={`text-[10px] sm:text-xs font-medium ${
                 isDark ? "text-slate-400" : "text-slate-700"
               }`}
             >
               Last Update
             </div>
             <div
-              className={`mt-1 text-sm font-medium ${
+              className={`mt-1 text-xs sm:text-sm font-medium ${
                 isDark ? "text-slate-200" : "text-slate-900"
               }`}
             >

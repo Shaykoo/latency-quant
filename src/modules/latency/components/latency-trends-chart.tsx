@@ -103,16 +103,16 @@ export function LatencyTrendsChart() {
 
   return (
     <div
-      className={`rounded-3xl border p-4 shadow-2xl ${
+      className={`rounded-3xl border p-3 sm:p-4 shadow-2xl ${
         isDark
           ? "border-slate-800/80 bg-slate-950/60 shadow-sky-900/30"
           : "border-slate-300/80 bg-slate-50/90 shadow-sky-900/10"
       }`}
     >
-      <div className="mb-4 space-y-3">
+      <div className="mb-3 sm:mb-4 space-y-2 sm:space-y-3">
         <div className="flex items-center justify-between">
           <h2
-            className={`text-lg font-semibold ${
+            className={`text-base sm:text-lg font-semibold ${
               isDark ? "text-slate-100" : "text-slate-900"
             }`}
           >
@@ -243,12 +243,12 @@ export function LatencyTrendsChart() {
           >
             Time Range
           </label>
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-5 gap-1 sm:gap-2">
             {(["1m", "1h", "24h", "7d", "30d"] as TimeRange[]).map((range) => (
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
-                className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                className={`rounded-lg px-1.5 sm:px-2 md:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium transition-colors ${
                   timeRange === range
                     ? "bg-sky-600 text-white"
                     : isDark
@@ -257,14 +257,14 @@ export function LatencyTrendsChart() {
                 }`}
               >
                 {range === "1m"
-                  ? "1 Min"
+                  ? "1m"
                   : range === "1h"
-                    ? "1 Hour"
+                    ? "1h"
                     : range === "24h"
-                      ? "24 Hours"
+                      ? "24h"
                       : range === "7d"
-                        ? "7 Days"
-                        : "30 Days"}
+                        ? "7d"
+                        : "30d"}
               </button>
             ))}
           </div>

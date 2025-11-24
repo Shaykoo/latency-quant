@@ -24,27 +24,27 @@ export function StreamStatus() {
 
   return (
     <div
-      className={`rounded-3xl border p-4 shadow-xl ${
+      className={`rounded-3xl border p-3 sm:p-4 shadow-xl ${
         isDark
           ? "border-slate-800/80 bg-slate-950/50 text-slate-200 shadow-sky-900/20"
           : "border-slate-300/80 bg-slate-50/90 text-slate-800 shadow-sky-900/10"
       }`}
     >
       <h2
-        className={`mb-3 text-sm font-semibold uppercase tracking-[0.4em] ${
+        className={`mb-2 sm:mb-3 text-xs sm:text-sm font-semibold uppercase tracking-[0.3em] sm:tracking-[0.4em] ${
           isDark ? "text-slate-400" : "text-slate-600"
         }`}
       >
         Stream status
       </h2>
-      <div className="space-y-3">
+      <div className="space-y-2 sm:space-y-3">
         <div className="flex items-center gap-2">
           <span
-            className="inline-flex h-3 w-3 rounded-full"
+            className="inline-flex h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full flex-shrink-0"
             style={{ backgroundColor: statusColor(status) }}
           />
           <p
-            className={`text-base font-medium ${
+            className={`text-sm sm:text-base font-medium ${
               isDark ? "text-slate-200" : "text-slate-900"
             }`}
           >

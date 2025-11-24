@@ -29,18 +29,18 @@ export function LatencyDashboardClient() {
   const isDark = theme === "dark";
 
   return (
-    <div className={`space-y-4 ${isDark ? "bg-transparent" : "bg-slate-50"}`}>
+    <div className={`space-y-3 sm:space-y-4 ${isDark ? "bg-transparent" : "bg-slate-50"}`}>
       <div
-        className={`grid gap-4 lg:grid-cols-[1.1fr_0.9fr] ${
+        className={`grid gap-3 sm:gap-4 lg:grid-cols-[1.1fr_0.9fr] ${
           isDark ? "bg-transparent" : "bg-slate-50"
         }`}
       >
-        <div className="space-y-4">
-          <div className="h-[80vh]">
+        <div className="space-y-3 sm:space-y-4">
+          <div className="h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh]">
             {isClientReady ? <LatencyGlobe /> : <LatencyGlobeSkeleton />}
           </div>
         </div>
-        <aside className="h-[80vh] overflow-y-auto space-y-4 pr-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900/50">
+        <aside className="h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] overflow-y-auto space-y-3 sm:space-y-4 pr-1 sm:pr-2 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900/50">
           {isClientReady ? <StreamStatus /> : null}
           {isClientReady ? <ControlPanel /> : null}
           {isClientReady ? <PerformanceMetrics /> : null}

@@ -18,7 +18,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     <DashboardLayoutClient>
       <DashboardHeaderClient />
       <main className="flex-1">
-        <div className={cn("mx-auto min-h-[calc(100vh-88px)] max-w-6xl px-4 py-6")}>
+        <div className={cn("mx-auto min-h-[calc(100vh-88px)] max-w-6xl px-3 sm:px-4 py-4 sm:py-6")}>
           {children}
         </div>
       </main>

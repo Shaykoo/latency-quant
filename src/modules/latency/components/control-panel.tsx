@@ -88,11 +88,11 @@ export function ControlPanel() {
         </button>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {/* Search */}
         <div>
           <label
-            className={`mb-2 block text-xs font-medium ${
+            className={`mb-1.5 sm:mb-2 block text-xs font-medium ${
               isDark ? "text-slate-400" : "text-slate-700"
             }`}
           >
@@ -103,7 +103,7 @@ export function ControlPanel() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Type to search..."
-            className={`w-full rounded-lg border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 ${
+            className={`w-full rounded-lg border px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 ${
               isDark
                 ? "border-slate-700/50 bg-slate-900/50 text-slate-100 placeholder:text-slate-600"
                 : "border-slate-300/50 bg-slate-100/90 text-slate-900 placeholder:text-slate-500"
@@ -186,7 +186,7 @@ export function ControlPanel() {
                 <button
                   key={provider}
                   onClick={() => toggleProvider(provider)}
-                  className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-all ${
+                  className={`flex items-center gap-1.5 sm:gap-2 rounded-lg border px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm transition-all ${
                     isSelected
                       ? isDark
                         ? "border-slate-700/50 bg-slate-900/60"
@@ -197,7 +197,7 @@ export function ControlPanel() {
                   }`}
                 >
                   <div
-                    className="h-2.5 w-2.5 rounded-full"
+                    className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full flex-shrink-0"
                     style={{ backgroundColor: colors[provider as keyof typeof colors] }}
                   />
                   <span
