@@ -4,16 +4,54 @@ import { memo, useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import { useLatencyFeed } from "../hooks/use-latency-feed";
+import { useProviderFilter } from "../hooks/use-provider-filter";
+import { useDashboardFilters } from "../hooks/use-dashboard-filters";
 import { useVisualizationLayers } from "../hooks/use-visualization-layers";
 import * as THREE from "three";
 
 export const LatencyConnections = memo(function LatencyConnections() {
   const markers = useLatencyFeed((state) => state.markers);
+  const visibleProviders = useProviderFilter((state) => state.visibleProviders);
+  const { selectedExchanges, selectedProviders, latencyRange } = useDashboardFilters();
   const showConnections = useVisualizationLayers(
     (state) => state.showConnections,
   );
 
-  // Create connections between all markers
+  // Filter markers using the same logic as MarkersLayer
+  const filteredMarkers = useMemo(() => {
+    return markers.filter((marker) => {
+      // Provider filter
+      if (!visibleProviders.has(marker.provider)) return false;
+
+      // Exchange filter
+      if (
+        selectedExchanges.size > 0 &&
+        !selectedExchanges.has(marker.exchange)
+      ) {
+        return false;
+      }
+
+      // Provider filter from control panel
+      if (
+        selectedProviders.size > 0 &&
+        !selectedProviders.has(marker.provider)
+      ) {
+        return false;
+      }
+
+      // Latency range filter
+      if (
+        marker.latencyMs < latencyRange[0] ||
+        marker.latencyMs > latencyRange[1]
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [markers, visibleProviders, selectedExchanges, selectedProviders, latencyRange]);
+
+  // Create connections between filtered markers only
   const connections = useMemo(() => {
     if (!showConnections) return [];
     const conns: Array<{
@@ -23,10 +61,10 @@ export const LatencyConnections = memo(function LatencyConnections() {
       color: string;
     }> = [];
 
-    for (let i = 0; i < markers.length; i++) {
-      for (let j = i + 1; j < markers.length; j++) {
-        const from = markers[i];
-        const to = markers[j];
+    for (let i = 0; i < filteredMarkers.length; i++) {
+      for (let j = i + 1; j < filteredMarkers.length; j++) {
+        const from = filteredMarkers[i];
+        const to = filteredMarkers[j];
         // Use average latency for connection color
         const avgLatency = (from.latencyMs + to.latencyMs) / 2;
         conns.push({
@@ -39,7 +77,7 @@ export const LatencyConnections = memo(function LatencyConnections() {
     }
 
     return conns;
-  }, [markers, showConnections]);
+  }, [filteredMarkers, showConnections]);
 
   if (!showConnections) return null;
 

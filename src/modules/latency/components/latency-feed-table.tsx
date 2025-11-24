@@ -3,15 +3,54 @@
 import { useMemo } from "react";
 
 import { useLatencyFeed } from "../hooks/use-latency-feed";
+import { useProviderFilter } from "../hooks/use-provider-filter";
+import { useDashboardFilters } from "../hooks/use-dashboard-filters";
 import { useTheme } from "../hooks/use-theme";
 
 export function LatencyFeedTable() {
   const markers = useLatencyFeed((state) => state.markers);
+  const visibleProviders = useProviderFilter((state) => state.visibleProviders);
+  const { selectedExchanges, selectedProviders, latencyRange } = useDashboardFilters();
   const theme = useTheme((state) => state.theme);
   const isDark = theme === "dark";
+
+  // Filter markers using the same logic as MarkersLayer
+  const filteredMarkers = useMemo(() => {
+    return markers.filter((marker) => {
+      // Provider filter
+      if (!visibleProviders.has(marker.provider)) return false;
+
+      // Exchange filter
+      if (
+        selectedExchanges.size > 0 &&
+        !selectedExchanges.has(marker.exchange)
+      ) {
+        return false;
+      }
+
+      // Provider filter from control panel
+      if (
+        selectedProviders.size > 0 &&
+        !selectedProviders.has(marker.provider)
+      ) {
+        return false;
+      }
+
+      // Latency range filter
+      if (
+        marker.latencyMs < latencyRange[0] ||
+        marker.latencyMs > latencyRange[1]
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [markers, visibleProviders, selectedExchanges, selectedProviders, latencyRange]);
+
   const sortedMarkers = useMemo(
-    () => [...markers].sort((a, b) => b.latencyMs - a.latencyMs),
-    [markers],
+    () => [...filteredMarkers].sort((a, b) => b.latencyMs - a.latencyMs),
+    [filteredMarkers],
   );
 
   if (sortedMarkers.length === 0) {
