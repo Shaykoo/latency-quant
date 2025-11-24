@@ -1,15 +1,28 @@
 "use client";
 
-import { Suspense, useEffect, useState, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Suspense, useEffect, useState, useRef, createContext, useContext } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Stars } from "@react-three/drei";
 import { MarkersLayer } from "./markers-layer";
 import { LatencyConnections } from "./latency-connections";
 import { RegionVisualization } from "./region-visualization";
 import { useLatencyStream } from "../hooks/use-latency-feed";
+import { useTheme } from "../hooks/use-theme";
+import * as THREE from "three";
+
+// Context to share hover state between markers and controls
+export const MarkerHoverContext = createContext<{
+  isMarkerHovered: boolean;
+  setMarkerHovered: (hovered: boolean) => void;
+}>({
+  isMarkerHovered: false,
+  setMarkerHovered: () => {},
+});
 
 export function LatencyGlobe() {
   useLatencyStream();
+  const theme = useTheme((state) => state.theme);
+  const isDark = theme === "dark";
 
   const [mounted, setMounted] = useState(false);
 
@@ -22,40 +35,84 @@ export function LatencyGlobe() {
   }
 
   return (
-    <div className="relative aspect-square w-full max-w-[620px] overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-950/60 shadow-2xl shadow-sky-900/30">
+    <div
+      className={`relative h-full w-full overflow-hidden rounded-3xl border shadow-2xl ${
+        isDark
+          ? "border-slate-800/80 bg-slate-950/60 shadow-sky-900/30"
+          : "border-slate-300/80 bg-slate-50/90 shadow-sky-900/10"
+      }`}
+    >
       <Canvas
         camera={{ position: [0, 0, 4.5], fov: 45 }}
         dpr={[1.5, 2]}
-        className="bg-slate-950"
+        className="!h-full !w-full"
+        gl={{ alpha: false }}
       >
-        <Suspense fallback={null}>
-          <ambientLight intensity={0.3} />
-          <directionalLight
-            position={[5, 5, 5]}
-            intensity={1.2}
-            color="#38bdf8"
-          />
-          <directionalLight
-            position={[-5, -3, -4]}
-            intensity={0.7}
-            color="#a855f7"
-          />
-          <Stars radius={50} depth={20} fade factor={4} saturation={1} />
-          <GlobeSurface />
-          <RegionVisualization />
-          <LatencyConnections />
-          <MarkersLayer />
-        </Suspense>
-        <SmoothOrbitControls />
+        <MarkerHoverProvider>
+          <Suspense fallback={null}>
+            <SkyBackground isDark={isDark} />
+            {isDark ? (
+              <>
+                <ambientLight intensity={0.3} />
+                <directionalLight
+                  position={[5, 5, 5]}
+                  intensity={1.2}
+                  color="#38bdf8"
+                />
+                <directionalLight
+                  position={[-5, -3, -4]}
+                  intensity={0.7}
+                  color="#a855f7"
+                />
+                <Stars radius={50} depth={20} fade factor={4} saturation={1} />
+              </>
+            ) : (
+              <>
+                <ambientLight intensity={0.8} />
+                <directionalLight
+                  position={[5, 5, 5]}
+                  intensity={1.5}
+                  color="#ffffff"
+                />
+                <directionalLight
+                  position={[-5, 3, -4]}
+                  intensity={0.4}
+                  color="#87ceeb"
+                />
+                <fog attach="fog" args={["#e0f2fe", 10, 50]} />
+              </>
+            )}
+            <GlobeSurface isDark={isDark} />
+            <RegionVisualization />
+            <LatencyConnections />
+            <MarkersLayer />
+          </Suspense>
+          <SmoothOrbitControls />
+        </MarkerHoverProvider>
       </Canvas>
-      <div className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-slate-700/40" />
+      <div
+        className={`pointer-events-none absolute inset-0 rounded-3xl ring-1 ${
+          isDark ? "ring-slate-700/40" : "ring-slate-300/40"
+        }`}
+      />
     </div>
+  );
+}
+
+function MarkerHoverProvider({ children }: { children: React.ReactNode }) {
+  const [isMarkerHovered, setMarkerHovered] = useState(false);
+
+  return (
+    <MarkerHoverContext.Provider value={{ isMarkerHovered, setMarkerHovered }}>
+      {children}
+    </MarkerHoverContext.Provider>
   );
 }
 
 function SmoothOrbitControls() {
   const controlsRef = useRef<any>(null);
   const [isInteracting, setIsInteracting] = useState(false);
+  const { isMarkerHovered } = useContext(MarkerHoverContext);
 
   // Update controls every frame for smooth damping
   useFrame(() => {
@@ -70,7 +127,7 @@ function SmoothOrbitControls() {
       enablePan={true}
       enableZoom={true}
       enableRotate={true}
-      autoRotate={!isInteracting}
+      autoRotate={!isInteracting && !isMarkerHovered}
       autoRotateSpeed={0.35}
       // Smooth damping for natural feel
       dampingFactor={0.05}
@@ -107,16 +164,45 @@ function SmoothOrbitControls() {
   );
 }
 
-function GlobeSurface() {
+function SkyBackground({ isDark }: { isDark: boolean }) {
+  const { scene } = useThree();
+  
+  useEffect(() => {
+    if (isDark) {
+      scene.background = new THREE.Color("#020617");
+    } else {
+      // Create a gradient sky background
+      const canvas = document.createElement("canvas");
+      canvas.width = 256;
+      canvas.height = 256;
+      const context = canvas.getContext("2d");
+      if (context) {
+        const gradient = context.createLinearGradient(0, 0, 0, 256);
+        gradient.addColorStop(0, "#bfdbfe"); // Light blue at top
+        gradient.addColorStop(0.5, "#93c5fd"); // Medium blue in middle
+        gradient.addColorStop(1, "#dbeafe"); // Very light blue at bottom
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, 256, 256);
+        const texture = new THREE.CanvasTexture(canvas);
+        scene.background = texture;
+      }
+    }
+  }, [isDark, scene]);
+
+  return null;
+}
+
+function GlobeSurface({ isDark }: { isDark: boolean }) {
   return (
     <mesh>
       <sphereGeometry args={[1.5, 96, 96]} />
       <meshStandardMaterial
-        color="#020617"
-        emissive="#0f172a"
-        roughness={0.3}
-        metalness={0.2}
-        envMapIntensity={0.6}
+        color={isDark ? "#020617" : "#1e40af"}
+        emissive={isDark ? "#0f172a" : "#3b82f6"}
+        emissiveIntensity={isDark ? 0.1 : 0.3}
+        roughness={isDark ? 0.3 : 0.5}
+        metalness={isDark ? 0.2 : 0.1}
+        envMapIntensity={isDark ? 0.6 : 0.8}
       />
     </mesh>
   );

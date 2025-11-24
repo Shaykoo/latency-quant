@@ -1,10 +1,11 @@
 "use client";
 
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo, useState, useContext, useEffect } from "react";
 import { Html } from "@react-three/drei";
 import { useLatencyFeed } from "../hooks/use-latency-feed";
 import { useProviderFilter } from "../hooks/use-provider-filter";
 import { useVisualizationLayers } from "../hooks/use-visualization-layers";
+import { MarkerHoverContext } from "./LatencyGlobe";
 import * as THREE from "three";
 
 type RegionCluster = {
@@ -80,7 +81,13 @@ export const RegionVisualization = memo(function RegionVisualization() {
 
 function RegionCluster({ cluster }: { cluster: RegionCluster }) {
   const [isHovered, setIsHovered] = useState(false);
+  const { setMarkerHovered } = useContext(MarkerHoverContext);
   const radius = 0.12 + cluster.markers.length * 0.015;
+
+  // Update global hover state when this region is hovered
+  useEffect(() => {
+    setMarkerHovered(isHovered);
+  }, [isHovered, setMarkerHovered]);
 
   const providerColors = {
     AWS: { color: "#FF9900", emissive: "#CC7700" },

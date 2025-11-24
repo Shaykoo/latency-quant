@@ -39,15 +39,15 @@ const useLatencyFeedStore = create<LatencyFeedState>((set) => ({
       markers: frame.samples.map((sample) => {
         const providerColors = providerToColor(sample.provider);
         return {
-          id: sample.id,
-          position: latLongToCartesian(sample.latitude, sample.longitude, 1.5),
+        id: sample.id,
+        position: latLongToCartesian(sample.latitude, sample.longitude, 1.5),
           color: providerColors.color,
           emissive: providerColors.emissive,
           label: sample.exchange,
-          latencyMs: sample.latencyMs,
+        latencyMs: sample.latencyMs,
           exchange: sample.exchange,
-          provider: sample.provider,
-          region: sample.region,
+        provider: sample.provider,
+        region: sample.region,
         };
       }),
       aggregated: frame.aggregated,

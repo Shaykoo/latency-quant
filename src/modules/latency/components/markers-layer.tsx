@@ -1,12 +1,13 @@
 "use client";
 
-import { memo, useState, useRef, useEffect, useMemo } from "react";
+import { memo, useState, useRef, useEffect, useMemo, useContext } from "react";
 import { Html } from "@react-three/drei";
 import type { Mesh } from "three";
 import { useLatencyFeed } from "../hooks/use-latency-feed";
 import { useProviderFilter } from "../hooks/use-provider-filter";
 import { useDashboardFilters } from "../hooks/use-dashboard-filters";
 import { useVisualizationLayers } from "../hooks/use-visualization-layers";
+import { MarkerHoverContext } from "./LatencyGlobe";
 
 export const MarkersLayer = memo(function MarkersLayer() {
   const markers = useLatencyFeed((state) => state.markers);
@@ -89,6 +90,12 @@ function Marker({
 }: MarkerProps) {
   const [isHovered, setIsHovered] = useState(false);
   const meshRef = useRef<Mesh>(null);
+  const { setMarkerHovered } = useContext(MarkerHoverContext);
+
+  // Update global hover state when this marker is hovered
+  useEffect(() => {
+    setMarkerHovered(isHovered);
+  }, [isHovered, setMarkerHovered]);
 
   // Close tooltip when clicking outside
   useEffect(() => {

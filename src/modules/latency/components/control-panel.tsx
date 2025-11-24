@@ -4,11 +4,15 @@ import { useMemo } from "react";
 import { useLatencyFeed } from "../hooks/use-latency-feed";
 import { useDashboardFilters } from "../hooks/use-dashboard-filters";
 import { useVisualizationLayers } from "../hooks/use-visualization-layers";
+import { CollapsibleSection } from "./collapsible-section";
+import { useTheme } from "../hooks/use-theme";
 
 export function ControlPanel() {
   const markers = useLatencyFeed((state) => state.markers);
   const status = useLatencyFeed((state) => state.status);
   const aggregated = useLatencyFeed((state) => state.aggregated);
+  const theme = useTheme((state) => state.theme);
+  const isDark = theme === "dark";
 
   const {
     selectedExchanges,
@@ -68,21 +72,28 @@ export function ControlPanel() {
   }, [aggregated]);
 
   return (
-    <div className="rounded-3xl border border-slate-800/80 bg-slate-950/60 p-6 shadow-2xl shadow-sky-900/30">
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-slate-100">Control Panel</h2>
+    <CollapsibleSection title="Control Panel" defaultCollapsed={false}>
+      <div className="mb-3 flex items-center justify-end">
         <button
           onClick={resetFilters}
-          className="rounded-lg px-3 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:bg-slate-800/50 hover:text-slate-200"
+          className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+            isDark
+              ? "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200"
+              : "text-slate-600 hover:bg-slate-200/50 hover:text-slate-900"
+          }`}
         >
           Reset
         </button>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Search */}
         <div>
-          <label className="mb-2 block text-xs font-medium text-slate-400">
+          <label
+            className={`mb-2 block text-xs font-medium ${
+              isDark ? "text-slate-400" : "text-slate-700"
+            }`}
+          >
             Search Exchanges & Regions
           </label>
           <input
@@ -90,13 +101,21 @@ export function ControlPanel() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Type to search..."
-            className="w-full rounded-lg border border-slate-700/50 bg-slate-900/50 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+            className={`w-full rounded-lg border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 ${
+              isDark
+                ? "border-slate-700/50 bg-slate-900/50 text-slate-100 placeholder:text-slate-600"
+                : "border-slate-300/50 bg-slate-100/90 text-slate-900 placeholder:text-slate-500"
+            }`}
           />
         </div>
 
         {/* Exchange Filter */}
         <div>
-          <label className="mb-2 block text-xs font-medium text-slate-400">
+          <label
+            className={`mb-2 block text-xs font-medium ${
+              isDark ? "text-slate-400" : "text-slate-700"
+            }`}
+          >
             Filter by Exchange
           </label>
           <div className="max-h-32 space-y-1.5 overflow-y-auto">
@@ -109,8 +128,10 @@ export function ControlPanel() {
                     onClick={() => toggleExchange(exchange)}
                     className={`flex w-full items-center justify-between rounded-lg border px-3 py-2 text-sm transition-all ${
                       isSelected
-                        ? "border-sky-600/50 bg-sky-600/20 text-slate-100"
-                        : "border-slate-700/50 bg-slate-900/30 text-slate-300 hover:bg-slate-900/50"
+                        ? "border-sky-600/50 bg-sky-600/20 text-white"
+                        : isDark
+                          ? "border-slate-700/50 bg-slate-900/30 text-slate-300 hover:bg-slate-900/50"
+                          : "border-slate-300/50 bg-slate-100/50 text-slate-800 hover:bg-slate-200/70"
                     }`}
                   >
                     <span>{exchange}</span>
@@ -121,11 +142,21 @@ export function ControlPanel() {
                 );
               })
             ) : (
-              <p className="py-2 text-xs text-slate-500">No matches found</p>
+              <p
+                className={`py-2 text-xs ${
+                  isDark ? "text-slate-500" : "text-slate-600"
+                }`}
+              >
+                No matches found
+              </p>
             )}
           </div>
           {selectedExchanges.size > 0 && (
-            <p className="mt-2 text-xs text-slate-500">
+            <p
+              className={`mt-2 text-xs ${
+                isDark ? "text-slate-500" : "text-slate-600"
+              }`}
+            >
               {selectedExchanges.size} exchange(s) selected
             </p>
           )}
@@ -133,7 +164,11 @@ export function ControlPanel() {
 
         {/* Provider Filter */}
         <div>
-          <label className="mb-2 block text-xs font-medium text-slate-400">
+          <label
+            className={`mb-2 block text-xs font-medium ${
+              isDark ? "text-slate-400" : "text-slate-700"
+            }`}
+          >
             Filter by Cloud Provider
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -151,15 +186,29 @@ export function ControlPanel() {
                   onClick={() => toggleProvider(provider)}
                   className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-all ${
                     isSelected
-                      ? "border-slate-700/50 bg-slate-900/60"
-                      : "border-slate-800/30 bg-slate-900/20 opacity-50"
+                      ? isDark
+                        ? "border-slate-700/50 bg-slate-900/60"
+                        : "border-slate-300/50 bg-slate-200/60"
+                      : isDark
+                        ? "border-slate-800/30 bg-slate-900/20 opacity-50"
+                        : "border-slate-300/30 bg-slate-100/30 opacity-70"
                   }`}
                 >
                   <div
                     className="h-2.5 w-2.5 rounded-full"
                     style={{ backgroundColor: colors[provider as keyof typeof colors] }}
                   />
-                  <span className={isSelected ? "text-slate-200" : "text-slate-500"}>
+                  <span
+                    className={
+                      isSelected
+                        ? isDark
+                          ? "text-slate-200"
+                          : "text-slate-900"
+                        : isDark
+                          ? "text-slate-500"
+                          : "text-slate-600"
+                    }
+                  >
                     {provider}
                   </span>
                 </button>
@@ -170,7 +219,11 @@ export function ControlPanel() {
 
         {/* Latency Range Filter */}
         <div>
-          <label className="mb-2 block text-xs font-medium text-slate-400">
+          <label
+            className={`mb-2 block text-xs font-medium ${
+              isDark ? "text-slate-400" : "text-slate-700"
+            }`}
+          >
             Latency Range: {latencyRange[0]}ms - {latencyRange[1]}ms
           </label>
           <div className="space-y-2">
@@ -182,9 +235,13 @@ export function ControlPanel() {
               onChange={(e) =>
                 setLatencyRange([latencyRange[0], Number(e.target.value)])
               }
-              className="w-full"
+              className="w-full accent-sky-600"
             />
-            <div className="flex justify-between text-xs text-slate-500">
+            <div
+              className={`flex justify-between text-xs ${
+                isDark ? "text-slate-500" : "text-slate-600"
+              }`}
+            >
               <span>0ms</span>
               <span>{maxLatency}ms</span>
             </div>
@@ -193,7 +250,11 @@ export function ControlPanel() {
 
         {/* Visualization Layer Toggles */}
         <div>
-          <label className="mb-2 block text-xs font-medium text-slate-400">
+          <label
+            className={`mb-2 block text-xs font-medium ${
+              isDark ? "text-slate-400" : "text-slate-700"
+            }`}
+          >
             Visualization Layers
           </label>
           <div className="space-y-2">
@@ -220,7 +281,7 @@ export function ControlPanel() {
           </div>
         </div>
       </div>
-    </div>
+    </CollapsibleSection>
   );
 }
 

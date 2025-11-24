@@ -8,6 +8,7 @@ import {
   type HistoricalDataPoint,
 } from "../hooks/use-latency-history";
 import { useVisualizationLayers } from "../hooks/use-visualization-layers";
+import { useTheme } from "../hooks/use-theme";
 
 const CHART_HEIGHT = 300;
 const CHART_PADDING = { top: 20, right: 20, bottom: 40, left: 60 };
@@ -97,11 +98,24 @@ export function LatencyTrendsChart() {
       .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
   }, [chartData]);
 
+  const theme = useTheme((state) => state.theme);
+  const isDark = theme === "dark";
+
   return (
-    <div className="rounded-3xl border border-slate-800/80 bg-slate-950/60 p-6 shadow-2xl shadow-sky-900/30">
-      <div className="mb-6 space-y-4">
+    <div
+      className={`rounded-3xl border p-4 shadow-2xl ${
+        isDark
+          ? "border-slate-800/80 bg-slate-950/60 shadow-sky-900/30"
+          : "border-slate-300/80 bg-slate-50/90 shadow-sky-900/10"
+      }`}
+    >
+      <div className="mb-4 space-y-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-100">
+          <h2
+            className={`text-lg font-semibold ${
+              isDark ? "text-slate-100" : "text-slate-900"
+            }`}
+          >
             Historical Latency Trends
           </h2>
         </div>
@@ -113,7 +127,9 @@ export function LatencyTrendsChart() {
             className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
               viewMode === "pair"
                 ? "bg-sky-600 text-white"
-                : "bg-slate-800/50 text-slate-300 hover:bg-slate-800/70"
+                : isDark
+                  ? "bg-slate-800/50 text-slate-300 hover:bg-slate-800/70"
+                  : "bg-slate-200/50 text-slate-700 hover:bg-slate-300/70"
             }`}
           >
             Exchange Pairs
@@ -123,7 +139,9 @@ export function LatencyTrendsChart() {
             className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
               viewMode === "region"
                 ? "bg-sky-600 text-white"
-                : "bg-slate-800/50 text-slate-300 hover:bg-slate-800/70"
+                : isDark
+                  ? "bg-slate-800/50 text-slate-300 hover:bg-slate-800/70"
+                  : "bg-slate-200/50 text-slate-700 hover:bg-slate-300/70"
             }`}
           >
             Regions
@@ -134,13 +152,21 @@ export function LatencyTrendsChart() {
         {viewMode === "pair" ? (
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-slate-400">
+              <label
+                className={`mb-1.5 block text-xs font-medium ${
+                  isDark ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
                 Exchange 1
               </label>
               <select
                 value={selectedExchange1}
                 onChange={(e) => setSelectedExchange1(e.target.value)}
-                className="w-full rounded-lg border border-slate-700/50 bg-slate-900/50 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                className={`w-full rounded-lg border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 ${
+                  isDark
+                    ? "border-slate-700/50 bg-slate-900/50 text-slate-100"
+                    : "border-slate-300/50 bg-slate-100/90 text-slate-900"
+                }`}
               >
                 <option value="">Select exchange...</option>
                 {exchanges.map((ex) => (
@@ -151,7 +177,11 @@ export function LatencyTrendsChart() {
               </select>
             </div>
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-slate-400">
+              <label
+                className={`mb-1.5 block text-xs font-medium ${
+                  isDark ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
                 Exchange 2 (Optional)
               </label>
               <select
@@ -159,7 +189,11 @@ export function LatencyTrendsChart() {
                 onChange={(e) =>
                   setSelectedExchange2(e.target.value || null)
                 }
-                className="w-full rounded-lg border border-slate-700/50 bg-slate-900/50 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                className={`w-full rounded-lg border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 ${
+                  isDark
+                    ? "border-slate-700/50 bg-slate-900/50 text-slate-100"
+                    : "border-slate-300/50 bg-slate-100/90 text-slate-900"
+                }`}
               >
                 <option value="">None (Single exchange)</option>
                 {exchanges
@@ -174,13 +208,21 @@ export function LatencyTrendsChart() {
           </div>
         ) : (
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-slate-400">
+            <label
+              className={`mb-1.5 block text-xs font-medium ${
+                isDark ? "text-slate-400" : "text-slate-700"
+              }`}
+            >
               Region
             </label>
             <select
               value={selectedRegion}
               onChange={(e) => setSelectedRegion(e.target.value)}
-              className="w-full rounded-lg border border-slate-700/50 bg-slate-900/50 px-3 py-2 text-sm text-slate-100 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+              className={`w-full rounded-lg border px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 ${
+                isDark
+                  ? "border-slate-700/50 bg-slate-900/50 text-slate-100"
+                  : "border-slate-300/50 bg-slate-100/90 text-slate-900"
+              }`}
             >
               <option value="">Select region...</option>
               {regions.map((reg) => (
@@ -194,7 +236,11 @@ export function LatencyTrendsChart() {
 
         {/* Time Range Selector */}
         <div>
-          <label className="mb-1.5 block text-xs font-medium text-slate-400">
+          <label
+            className={`mb-1.5 block text-xs font-medium ${
+              isDark ? "text-slate-400" : "text-slate-700"
+            }`}
+          >
             Time Range
           </label>
           <div className="grid grid-cols-5 gap-2">
@@ -205,7 +251,9 @@ export function LatencyTrendsChart() {
                 className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
                   timeRange === range
                     ? "bg-sky-600 text-white"
-                    : "bg-slate-800/50 text-slate-300 hover:bg-slate-800/70"
+                    : isDark
+                      ? "bg-slate-800/50 text-slate-300 hover:bg-slate-800/70"
+                      : "bg-slate-200/50 text-slate-700 hover:bg-slate-300/70"
                 }`}
               >
                 {range === "1m"
@@ -226,23 +274,57 @@ export function LatencyTrendsChart() {
       {/* Statistics */}
       {chartData.length > 0 && (
         <div className="mb-6 grid grid-cols-3 gap-4">
-          <div className="rounded-xl border border-slate-800/70 bg-slate-900/40 p-4">
-            <div className="text-xs font-medium text-slate-400">Min Latency</div>
-            <div className="mt-1 text-lg font-semibold text-green-400">
+          <div
+            className={`rounded-xl border p-4 ${
+              isDark
+                ? "border-slate-800/70 bg-slate-900/40"
+                : "border-slate-300/70 bg-slate-100/60"
+            }`}
+          >
+            <div
+              className={`text-xs font-medium ${
+                isDark ? "text-slate-400" : "text-slate-700"
+              }`}
+            >
+              Min Latency
+            </div>
+            <div className="mt-1 text-lg font-semibold text-green-500">
               {statistics.min.toFixed(0)}ms
             </div>
           </div>
-          <div className="rounded-xl border border-slate-800/70 bg-slate-900/40 p-4">
-            <div className="text-xs font-medium text-slate-400">
+          <div
+            className={`rounded-xl border p-4 ${
+              isDark
+                ? "border-slate-800/70 bg-slate-900/40"
+                : "border-slate-300/70 bg-slate-100/60"
+            }`}
+          >
+            <div
+              className={`text-xs font-medium ${
+                isDark ? "text-slate-400" : "text-slate-700"
+              }`}
+            >
               Average Latency
             </div>
-            <div className="mt-1 text-lg font-semibold text-cyan-400">
+            <div className="mt-1 text-lg font-semibold text-cyan-600">
               {statistics.avg.toFixed(1)}ms
             </div>
           </div>
-          <div className="rounded-xl border border-slate-800/70 bg-slate-900/40 p-4">
-            <div className="text-xs font-medium text-slate-400">Max Latency</div>
-            <div className="mt-1 text-lg font-semibold text-red-400">
+          <div
+            className={`rounded-xl border p-4 ${
+              isDark
+                ? "border-slate-800/70 bg-slate-900/40"
+                : "border-slate-300/70 bg-slate-100/60"
+            }`}
+          >
+            <div
+              className={`text-xs font-medium ${
+                isDark ? "text-slate-400" : "text-slate-700"
+              }`}
+            >
+              Max Latency
+            </div>
+            <div className="mt-1 text-lg font-semibold text-red-500">
               {statistics.max.toFixed(0)}ms
             </div>
           </div>
@@ -253,44 +335,86 @@ export function LatencyTrendsChart() {
       {groupedData.length > 0 ? (
         <TimeSeriesChart data={groupedData} />
       ) : (
-        <div className="flex h-[300px] flex-col items-center justify-center rounded-xl border border-slate-800/70 bg-slate-900/20">
-          <p className="text-sm text-slate-500">
+        <div
+          className={`flex h-[300px] flex-col items-center justify-center rounded-xl border ${
+            isDark
+              ? "border-slate-800/70 bg-slate-900/20"
+              : "border-slate-300/70 bg-slate-100/20"
+          }`}
+        >
+          <p
+            className={`text-sm ${
+              isDark ? "text-slate-500" : "text-slate-600"
+            }`}
+          >
             {selectedExchange1 || selectedRegion
               ? "No data available for the selected criteria"
               : "Select an exchange pair or region to view trends"}
           </p>
           {totalDataCount === 0 && (
             <div className="mt-4 space-y-2 text-center">
-              <p className="text-xs text-slate-600">
+              <p
+                className={`text-xs ${
+                  isDark ? "text-slate-600" : "text-slate-700"
+                }`}
+              >
                 Waiting for data to accumulate...
               </p>
-              <p className="text-[10px] text-slate-700">
+              <p
+                className={`text-[10px] ${
+                  isDark ? "text-slate-700" : "text-slate-800"
+                }`}
+              >
                 Data updates every 5 seconds. Please wait a moment.
               </p>
             </div>
           )}
           {totalDataCount > 0 && (selectedExchange1 || selectedRegion) && chartData.length === 0 && (
             <div className="mt-4 space-y-2 text-center">
-              <p className="text-xs text-slate-600">
+              <p
+                className={`text-xs ${
+                  isDark ? "text-slate-600" : "text-slate-700"
+                }`}
+              >
                 No data found for the selected criteria.
               </p>
-              <p className="text-[10px] text-slate-700">
+              <p
+                className={`text-[10px] ${
+                  isDark ? "text-slate-700" : "text-slate-800"
+                }`}
+              >
                 Found {chartData.length} matching points (Total in store: {totalDataCount})
               </p>
-              <p className="text-[10px] text-slate-700">
+              <p
+                className={`text-[10px] ${
+                  isDark ? "text-slate-700" : "text-slate-800"
+                }`}
+              >
                 Selected: {viewMode === "pair" 
                   ? `${selectedExchange1}${selectedExchange2 ? ` & ${selectedExchange2}` : ""}` 
                   : selectedRegion} | Time range: {timeRange}
               </p>
-              <p className="text-[10px] text-slate-700">
+              <p
+                className={`text-[10px] ${
+                  isDark ? "text-slate-700" : "text-slate-800"
+                }`}
+              >
                 Try selecting a different exchange/region or a longer time range.
               </p>
               {/* Debug info */}
               <details className="mt-4 text-left">
-                <summary className="cursor-pointer text-[10px] text-slate-600">
+                <summary
+                  className={`cursor-pointer text-[10px] ${
+                    isDark ? "text-slate-600" : "text-slate-700"
+                  }`}
+                >
                   Debug Info
                 </summary>
-                <div className="mt-2 space-y-1 text-[9px] text-slate-700">
+                <div
+                  className={`mt-2 space-y-1 text-[9px] ${
+                    isDark ? "text-slate-700" : "text-slate-800"
+                  }`}
+                >
                   <p>Cutoff time: {new Date(Date.now() - (timeRange === "1m" ? 60000 : timeRange === "1h" ? 3600000 : timeRange === "24h" ? 86400000 : timeRange === "7d" ? 604800000 : 2592000000)).toISOString()}</p>
                   <p>Current time: {new Date().toISOString()}</p>
                   <p>Sample exchanges in store: {Array.from(new Set(allHistoryData.slice(0, 10).map(d => d.exchange))).join(", ")}</p>
@@ -302,7 +426,11 @@ export function LatencyTrendsChart() {
             </div>
           )}
           {totalDataCount > 0 && !selectedExchange1 && !selectedRegion && (
-            <p className="mt-2 text-xs text-slate-600">
+            <p
+              className={`mt-2 text-xs ${
+                isDark ? "text-slate-600" : "text-slate-700"
+              }`}
+            >
               {totalDataCount} data points available. Select filters above to view trends.
             </p>
           )}

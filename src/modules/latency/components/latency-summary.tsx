@@ -1,6 +1,7 @@
 "use client";
 
 import { useLatencyFeed } from "../hooks/use-latency-feed";
+import { useTheme } from "../hooks/use-theme";
 
 const statConfig = [
   { key: "avg", label: "Avg Latency", unit: "ms" },
@@ -11,43 +12,26 @@ const statConfig = [
 
 export function LatencySummary() {
   const aggregated = useLatencyFeed((state) => state.aggregated);
-  const status = useLatencyFeed((state) => state.status);
-  const lastUpdated = useLatencyFeed((state) => state.lastUpdated);
-  const errorMessage = useLatencyFeed((state) => state.errorMessage);
+  const theme = useTheme((state) => state.theme);
+  const isDark = theme === "dark";
 
   return (
-    <section className="grid gap-4 rounded-3xl border border-slate-800/80 bg-slate-950/50 p-6 text-sm text-slate-200 shadow-xl shadow-sky-900/20 md:grid-cols-2">
-      <div className="space-y-4">
-        <h2 className="text-base font-semibold uppercase tracking-[0.4em] text-slate-400">
-          Stream status
-        </h2>
-        <div className="flex items-center gap-3">
-          <span
-            className="inline-flex h-3 w-3 rounded-full"
-            style={{ backgroundColor: statusColor(status) }}
-          />
-          <p className="text-lg font-medium">
-            {status === "streaming" && "Streaming live latency frames"}
-            {status === "connecting" && "Connecting to latency stream…"}
-            {status === "error" && "Stream disrupted"}
-          </p>
-        </div>
-        {errorMessage ? (
-          <p className="rounded-xl border border-rose-500/50 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-            {errorMessage}
-          </p>
-        ) : (
-          <p className="text-xs uppercase tracking-[0.25em] text-slate-500">
-            Last update •{" "}
-            {lastUpdated ? lastUpdated.toLocaleTimeString() : "pending"}
-          </p>
-        )}
-      </div>
-      <div className="space-y-4">
-        <h2 className="text-base font-semibold uppercase tracking-[0.4em] text-slate-400">
+    <section
+      className={`rounded-3xl border p-4 text-sm shadow-xl ${
+        isDark
+          ? "border-slate-800/80 bg-slate-950/50 text-slate-200 shadow-sky-900/20"
+          : "border-slate-300/80 bg-slate-50/90 text-slate-800 shadow-sky-900/10"
+      }`}
+    >
+      <div className="space-y-3">
+        <h2
+          className={`text-sm font-semibold uppercase tracking-[0.4em] ${
+            isDark ? "text-slate-400" : "text-slate-600"
+          }`}
+        >
           Aggregated metrics
         </h2>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-2 sm:grid-cols-2">
           {statConfig.map((stat) => (
             <StatCard
               key={stat.key}
@@ -73,28 +57,38 @@ function StatCard({
   value?: number;
   unit: string;
 }) {
+  const theme = useTheme((state) => state.theme);
+  const isDark = theme === "dark";
+
   return (
-    <div className="rounded-2xl border border-slate-800/70 bg-slate-900/60 px-4 py-5 shadow-lg shadow-slate-950/40">
-      <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
+    <div
+      className={`rounded-xl border px-3 py-3 shadow-lg ${
+        isDark
+          ? "border-slate-800/70 bg-slate-900/60 shadow-slate-950/40"
+          : "border-slate-300/70 bg-slate-100/60 shadow-slate-200/40"
+      }`}
+    >
+      <p
+        className={`text-xs uppercase tracking-[0.3em] ${
+          isDark ? "text-slate-500" : "text-slate-600"
+        }`}
+      >
         {label}
       </p>
-      <p className="mt-2 text-2xl font-semibold text-slate-50">
+      <p
+        className={`mt-2 text-2xl font-semibold ${
+          isDark ? "text-slate-50" : "text-slate-900"
+        }`}
+      >
         {value !== undefined ? value : "—"}
-        <span className="ml-1 text-sm text-slate-400">{unit}</span>
+        <span
+          className={`ml-1 text-sm ${isDark ? "text-slate-400" : "text-slate-600"}`}
+        >
+          {unit}
+        </span>
       </p>
     </div>
   );
 }
 
-function statusColor(status: "connecting" | "streaming" | "error") {
-  switch (status) {
-    case "streaming":
-      return "#38bdf8";
-    case "connecting":
-      return "#facc15";
-    case "error":
-    default:
-      return "#f87171";
-  }
-}
 

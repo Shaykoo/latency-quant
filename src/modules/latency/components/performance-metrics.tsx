@@ -2,12 +2,16 @@
 
 import { useMemo } from "react";
 import { useLatencyFeed } from "../hooks/use-latency-feed";
+import { CollapsibleSection } from "./collapsible-section";
+import { useTheme } from "../hooks/use-theme";
 
 export function PerformanceMetrics() {
   const status = useLatencyFeed((state) => state.status);
   const aggregated = useLatencyFeed((state) => state.aggregated);
   const lastUpdated = useLatencyFeed((state) => state.lastUpdated);
   const markers = useLatencyFeed((state) => state.markers);
+  const theme = useTheme((state) => state.theme);
+  const isDark = theme === "dark";
 
   const uptime = useMemo(() => {
     if (!lastUpdated) return "0s";
@@ -32,17 +36,25 @@ export function PerformanceMetrics() {
   }[status];
 
   return (
-    <div className="rounded-3xl border border-slate-800/80 bg-slate-950/60 p-6 shadow-2xl shadow-sky-900/30">
-      <h2 className="mb-6 text-lg font-semibold text-slate-100">
-        Performance Metrics
-      </h2>
-
-      <div className="space-y-4">
+    <CollapsibleSection title="Performance Metrics" defaultCollapsed={true}>
+      <div className="space-y-3">
         {/* System Status */}
-        <div className="rounded-xl border border-slate-800/70 bg-slate-900/40 p-4">
+        <div
+          className={`rounded-xl border p-4 ${
+            isDark
+              ? "border-slate-800/70 bg-slate-900/40"
+              : "border-slate-300/70 bg-slate-100/60"
+          }`}
+        >
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-xs font-medium text-slate-400">System Status</div>
+              <div
+                className={`text-xs font-medium ${
+                  isDark ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
+                System Status
+              </div>
               <div className={`mt-1 text-lg font-semibold ${statusColor}`}>
                 {status.charAt(0).toUpperCase() + status.slice(1)}
               </div>
@@ -58,21 +70,57 @@ export function PerformanceMetrics() {
         {/* Latency Statistics */}
         {aggregated && (
           <div className="grid grid-cols-3 gap-3">
-            <div className="rounded-xl border border-slate-800/70 bg-slate-900/40 p-4">
-              <div className="text-xs font-medium text-slate-400">Min Latency</div>
-              <div className="mt-1 text-lg font-semibold text-green-400">
+            <div
+              className={`rounded-xl border p-4 ${
+                isDark
+                  ? "border-slate-800/70 bg-slate-900/40"
+                  : "border-slate-300/70 bg-slate-100/60"
+              }`}
+            >
+              <div
+                className={`text-xs font-medium ${
+                  isDark ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
+                Min Latency
+              </div>
+              <div className="mt-1 text-lg font-semibold text-green-500">
                 {aggregated.min.toFixed(0)}ms
               </div>
             </div>
-            <div className="rounded-xl border border-slate-800/70 bg-slate-900/40 p-4">
-              <div className="text-xs font-medium text-slate-400">Avg Latency</div>
-              <div className="mt-1 text-lg font-semibold text-cyan-400">
+            <div
+              className={`rounded-xl border p-4 ${
+                isDark
+                  ? "border-slate-800/70 bg-slate-900/40"
+                  : "border-slate-300/70 bg-slate-100/60"
+              }`}
+            >
+              <div
+                className={`text-xs font-medium ${
+                  isDark ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
+                Avg Latency
+              </div>
+              <div className="mt-1 text-lg font-semibold text-cyan-600">
                 {aggregated.avg.toFixed(1)}ms
               </div>
             </div>
-            <div className="rounded-xl border border-slate-800/70 bg-slate-900/40 p-4">
-              <div className="text-xs font-medium text-slate-400">Max Latency</div>
-              <div className="mt-1 text-lg font-semibold text-red-400">
+            <div
+              className={`rounded-xl border p-4 ${
+                isDark
+                  ? "border-slate-800/70 bg-slate-900/40"
+                  : "border-slate-300/70 bg-slate-100/60"
+              }`}
+            >
+              <div
+                className={`text-xs font-medium ${
+                  isDark ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
+                Max Latency
+              </div>
+              <div className="mt-1 text-lg font-semibold text-red-500">
                 {aggregated.max.toFixed(0)}ms
               </div>
             </div>
@@ -81,26 +129,76 @@ export function PerformanceMetrics() {
 
         {/* System Info */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-xl border border-slate-800/70 bg-slate-900/40 p-4">
-            <div className="text-xs font-medium text-slate-400">Active Servers</div>
-            <div className="mt-1 text-lg font-semibold text-slate-100">
+          <div
+            className={`rounded-xl border p-4 ${
+              isDark
+                ? "border-slate-800/70 bg-slate-900/40"
+                : "border-slate-300/70 bg-slate-100/60"
+            }`}
+          >
+            <div
+              className={`text-xs font-medium ${
+                isDark ? "text-slate-400" : "text-slate-700"
+              }`}
+            >
+              Active Servers
+            </div>
+            <div
+              className={`mt-1 text-lg font-semibold ${
+                isDark ? "text-slate-100" : "text-slate-900"
+              }`}
+            >
               {markers.length}
             </div>
           </div>
-          <div className="rounded-xl border border-slate-800/70 bg-slate-900/40 p-4">
-            <div className="text-xs font-medium text-slate-400">Uptime</div>
-            <div className="mt-1 text-lg font-semibold text-slate-100">{uptime}</div>
+          <div
+            className={`rounded-xl border p-4 ${
+              isDark
+                ? "border-slate-800/70 bg-slate-900/40"
+                : "border-slate-300/70 bg-slate-100/60"
+            }`}
+          >
+            <div
+              className={`text-xs font-medium ${
+                isDark ? "text-slate-400" : "text-slate-700"
+              }`}
+            >
+              Uptime
+            </div>
+            <div
+              className={`mt-1 text-lg font-semibold ${
+                isDark ? "text-slate-100" : "text-slate-900"
+              }`}
+            >
+              {uptime}
+            </div>
           </div>
         </div>
 
         {/* P95 Latency */}
         {aggregated && "p95" in aggregated && (
-          <div className="rounded-xl border border-slate-800/70 bg-slate-900/40 p-4">
-            <div className="text-xs font-medium text-slate-400">P95 Latency</div>
-            <div className="mt-1 text-lg font-semibold text-yellow-400">
+          <div
+            className={`rounded-xl border p-4 ${
+              isDark
+                ? "border-slate-800/70 bg-slate-900/40"
+                : "border-slate-300/70 bg-slate-100/60"
+            }`}
+          >
+            <div
+              className={`text-xs font-medium ${
+                isDark ? "text-slate-400" : "text-slate-700"
+              }`}
+            >
+              P95 Latency
+            </div>
+            <div className="mt-1 text-lg font-semibold text-yellow-500">
               {aggregated.p95.toFixed(0)}ms
             </div>
-            <div className="mt-1 text-[10px] text-slate-500">
+            <div
+              className={`mt-1 text-[10px] ${
+                isDark ? "text-slate-500" : "text-slate-600"
+              }`}
+            >
               95% of requests are below this value
             </div>
           </div>
@@ -108,15 +206,31 @@ export function PerformanceMetrics() {
 
         {/* Last Update */}
         {lastUpdated && (
-          <div className="rounded-xl border border-slate-800/70 bg-slate-900/40 p-4">
-            <div className="text-xs font-medium text-slate-400">Last Update</div>
-            <div className="mt-1 text-sm font-medium text-slate-200">
+          <div
+            className={`rounded-xl border p-4 ${
+              isDark
+                ? "border-slate-800/70 bg-slate-900/40"
+                : "border-slate-300/70 bg-slate-100/60"
+            }`}
+          >
+            <div
+              className={`text-xs font-medium ${
+                isDark ? "text-slate-400" : "text-slate-700"
+              }`}
+            >
+              Last Update
+            </div>
+            <div
+              className={`mt-1 text-sm font-medium ${
+                isDark ? "text-slate-200" : "text-slate-900"
+              }`}
+            >
               {lastUpdated.toLocaleTimeString()}
             </div>
           </div>
         )}
       </div>
-    </div>
+    </CollapsibleSection>
   );
 }
 
