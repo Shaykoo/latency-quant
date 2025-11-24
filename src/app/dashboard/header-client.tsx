@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ThemeToggle } from "@/modules/latency/components/theme-toggle";
+import { ExportButton } from "@/modules/latency/components/export-button";
 import { useThemeSync, useTheme } from "@/modules/latency/hooks/use-theme";
 
 const navItems = [
@@ -81,6 +82,7 @@ export function DashboardHeaderClient() {
           >
             View Docs
           </a>
+          <ExportButton />
           <ThemeToggle />
         </nav>
       </div>
