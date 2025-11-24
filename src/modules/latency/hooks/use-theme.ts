@@ -54,8 +54,9 @@ export function useThemeSync() {
     // Only after mount, read from localStorage and apply
     if (typeof window !== "undefined") {
       const savedTheme = localStorage.getItem("latency-dashboard-theme") as Theme | null;
-      // Default to "dark" if no saved preference, otherwise use saved preference
-      const themeToApply = savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark";
+      // Default to "dark" for first-time users (when no saved preference exists)
+      // Otherwise use the saved preference
+      const themeToApply = savedTheme === "dark" || savedTheme === "light" ? savedTheme : "dark";
       
       setTheme(themeToApply);
       applyTheme(themeToApply);
