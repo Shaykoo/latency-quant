@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { create } from "zustand";
 import type { LatencyFrame } from "../schema";
+import { useLatencyHistoryStore } from "./use-latency-history";
 
 type Marker = {
   id: string;
@@ -42,7 +43,7 @@ const useLatencyFeedStore = create<LatencyFeedState>((set) => ({
           position: latLongToCartesian(sample.latitude, sample.longitude, 1.5),
           color: providerColors.color,
           emissive: providerColors.emissive,
-          label: `${sample.exchange} • ${sample.latencyMs.toFixed(0)}ms`,
+          label: sample.exchange,
           latencyMs: sample.latencyMs,
           exchange: sample.exchange,
           provider: sample.provider,
@@ -86,6 +87,8 @@ export function useLatencyStream() {
         try {
           const payload = JSON.parse(event.data) as { frame: LatencyFrame };
           useLatencyFeedStore.getState().setFrame(payload.frame);
+          // Accumulate historical data
+          useLatencyHistoryStore.getState().addFrame(payload.frame);
         } catch (error) {
           useLatencyFeedStore
             .getState()

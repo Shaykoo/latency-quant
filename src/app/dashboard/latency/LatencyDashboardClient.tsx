@@ -6,6 +6,18 @@ import { LatencyGlobe } from "@/modules/latency/components/LatencyGlobe";
 import { LatencySummary } from "@/modules/latency/components/latency-summary";
 import { LatencyFeedTable } from "@/modules/latency/components/latency-feed-table";
 import { ProviderLegend } from "@/modules/latency/components/provider-legend";
+import { LatencyTrendsChart } from "@/modules/latency/components/latency-trends-chart";
+import { ProviderFilter } from "@/modules/latency/components/provider-filter";
+import { useProviderFilter } from "@/modules/latency/hooks/use-provider-filter";
+import { ControlPanel } from "@/modules/latency/components/control-panel";
+import { PerformanceMetrics } from "@/modules/latency/components/performance-metrics";
+import { useVisualizationLayers } from "@/modules/latency/hooks/use-visualization-layers";
+
+function ConditionalLatencyTrendsChart() {
+  const showHistorical = useVisualizationLayers((state) => state.showHistorical);
+  if (!showHistorical) return null;
+  return <LatencyTrendsChart />;
+}
 
 export function LatencyDashboardClient() {
   const isClientReady = useClientReady();
@@ -15,10 +27,13 @@ export function LatencyDashboardClient() {
       <div className="space-y-6">
         {isClientReady ? <LatencyGlobe /> : <LatencyGlobeSkeleton />}
         {isClientReady ? <LatencySummary /> : <LatencySummarySkeleton />}
+        {isClientReady && <ConditionalLatencyTrendsChart />}
       </div>
       <aside className="space-y-6">
-        <HeroCopy />
-        {isClientReady ? <ProviderLegend /> : null}
+        {isClientReady ? <ControlPanel /> : null}
+        {isClientReady ? <PerformanceMetrics /> : null}
+        {/* {isClientReady ? <ProviderFilterControl /> : null} */}
+        {/* {isClientReady ? <ProviderLegend /> : null} */}
         {isClientReady ? <LatencyFeedTable /> : <LatencyFeedTableSkeleton />}
       </aside>
     </div>
@@ -84,6 +99,18 @@ function LatencyFeedTableSkeleton() {
         ))}
       </div>
     </div>
+  );
+}
+
+function ProviderFilterControl() {
+  const visibleProviders = useProviderFilter((state) => state.visibleProviders);
+  const toggleProvider = useProviderFilter((state) => state.toggleProvider);
+
+  return (
+    <ProviderFilter
+      visibleProviders={visibleProviders}
+      onToggleProvider={toggleProvider}
+    />
   );
 }
 

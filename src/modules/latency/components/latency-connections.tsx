@@ -4,13 +4,18 @@ import { memo, useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import { useLatencyFeed } from "../hooks/use-latency-feed";
+import { useVisualizationLayers } from "../hooks/use-visualization-layers";
 import * as THREE from "three";
 
 export const LatencyConnections = memo(function LatencyConnections() {
   const markers = useLatencyFeed((state) => state.markers);
+  const showConnections = useVisualizationLayers(
+    (state) => state.showConnections,
+  );
 
   // Create connections between all markers
   const connections = useMemo(() => {
+    if (!showConnections) return [];
     const conns: Array<{
       from: [number, number, number];
       to: [number, number, number];
@@ -34,7 +39,9 @@ export const LatencyConnections = memo(function LatencyConnections() {
     }
 
     return conns;
-  }, [markers]);
+  }, [markers, showConnections]);
+
+  if (!showConnections) return null;
 
   return (
     <>

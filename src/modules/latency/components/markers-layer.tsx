@@ -1,16 +1,65 @@
 "use client";
 
-import { memo, useState, useRef, useEffect } from "react";
+import { memo, useState, useRef, useEffect, useMemo } from "react";
 import { Html } from "@react-three/drei";
 import type { Mesh } from "three";
 import { useLatencyFeed } from "../hooks/use-latency-feed";
+import { useProviderFilter } from "../hooks/use-provider-filter";
+import { useDashboardFilters } from "../hooks/use-dashboard-filters";
+import { useVisualizationLayers } from "../hooks/use-visualization-layers";
 
 export const MarkersLayer = memo(function MarkersLayer() {
   const markers = useLatencyFeed((state) => state.markers);
+  const visibleProviders = useProviderFilter((state) => state.visibleProviders);
+  const { selectedExchanges, selectedProviders, latencyRange } =
+    useDashboardFilters();
+  const showRealtime = useVisualizationLayers((state) => state.showRealtime);
+
+  const filteredMarkers = useMemo(() => {
+    if (!showRealtime) return [];
+
+    return markers.filter((marker) => {
+      // Provider filter
+      if (!visibleProviders.has(marker.provider)) return false;
+
+      // Exchange filter
+      if (
+        selectedExchanges.size > 0 &&
+        !selectedExchanges.has(marker.exchange)
+      ) {
+        return false;
+      }
+
+      // Provider filter from control panel
+      if (
+        selectedProviders.size > 0 &&
+        !selectedProviders.has(marker.provider)
+      ) {
+        return false;
+      }
+
+      // Latency range filter
+      if (
+        marker.latencyMs < latencyRange[0] ||
+        marker.latencyMs > latencyRange[1]
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [
+    markers,
+    visibleProviders,
+    selectedExchanges,
+    selectedProviders,
+    latencyRange,
+    showRealtime,
+  ]);
 
   return (
     <>
-      {markers.map(({ id, ...markerProps }) => (
+      {filteredMarkers.map(({ id, ...markerProps }) => (
         <Marker key={id} {...markerProps} />
       ))}
     </>
