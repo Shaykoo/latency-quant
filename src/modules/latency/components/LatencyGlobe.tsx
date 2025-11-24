@@ -6,6 +6,7 @@ import { OrbitControls, Stars } from "@react-three/drei";
 import { MarkersLayer } from "./markers-layer";
 import { LatencyConnections } from "./latency-connections";
 import { RegionVisualization } from "./region-visualization";
+import { LatencyHeatmap } from "./latency-heatmap";
 import { useLatencyStream } from "../hooks/use-latency-feed";
 import { useTheme } from "../hooks/use-theme";
 import * as THREE from "three";
@@ -83,6 +84,7 @@ export function LatencyGlobe() {
               </>
             )}
             <GlobeSurface isDark={isDark} />
+            <LatencyHeatmap />
             <RegionVisualization />
             <LatencyConnections />
             <MarkersLayer />

@@ -31,10 +31,12 @@ export function ControlPanel() {
     showHistorical,
     showRegions,
     showConnections,
+    showHeatmap,
     toggleRealtime,
     toggleHistorical,
     toggleRegions,
     toggleConnections,
+    toggleHeatmap,
   } = useVisualizationLayers();
 
   // Get unique exchanges and regions
@@ -277,6 +279,11 @@ export function ControlPanel() {
               label="Latency Connections"
               enabled={showConnections}
               onToggle={toggleConnections}
+            />
+            <ToggleSwitch
+              label="Latency Heatmap"
+              enabled={showHeatmap}
+              onToggle={toggleHeatmap}
             />
           </div>
         </div>
