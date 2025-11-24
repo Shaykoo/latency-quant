@@ -68,7 +68,7 @@ export async function GET() {
         abortController.signal,
       );
 
-      const heartbeatCleanup = createHeartbeat(controller);
+      const heartbeatCleanup = createHeartbeat(safeEnqueue);
 
       safeEnqueue(encoder.encode(`event: ready\ndata: {}\n\n`));
 

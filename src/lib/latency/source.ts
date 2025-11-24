@@ -47,10 +47,12 @@ export function createLatencyPoller(
   return cleanup;
 }
 
-export function createHeartbeat(controller: ReadableStreamDefaultController<Uint8Array>) {
+export function createHeartbeat(
+  safeEnqueue: (chunk: Uint8Array) => void,
+) {
   const encoder = new TextEncoder();
   const interval = setInterval(() => {
-    controller.enqueue(encoder.encode(`event: heartbeat\ndata: {}\n\n`));
+    safeEnqueue(encoder.encode(`event: heartbeat\ndata: {}\n\n`));
   }, HEARTBEAT_INTERVAL_MS);
 
   return () => clearInterval(interval);
