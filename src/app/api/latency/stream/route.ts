@@ -11,7 +11,7 @@ export async function GET() {
 
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {
-      const abortController = new AbortController();
+      const abortController = new AbortController(); // for cleanup
       let isClosed = false;
 
       const shutdown = (reason?: unknown) => {

@@ -53,7 +53,9 @@ const LOCATIONS: LatencyLocation[] = [
 
 export function generateLatencyFrame(): LatencyStreamEnvelope {
   const samples = LOCATIONS.map((location) => {
+    // Calculate time-based jitter
     const jitter = Math.sin(Date.now() / 60000 + location.latitude) * 12;
+    // Get provider-specific base latency
     const baseLatency =
       location.provider === "Fastly"
         ? randomBetween(45, 80)
@@ -93,6 +95,7 @@ export function generateLatencyFrame(): LatencyStreamEnvelope {
   return { frame };
 }
 
+// Helper functions
 function percentile(values: number[], percentileValue: number) {
   const sorted = [...values].sort((a, b) => a - b);
   const index = Math.floor(percentileValue * (sorted.length - 1));

@@ -108,7 +108,7 @@ const useLatencyHistoryStore = create<LatencyHistoryState>((set, get) => ({
 function getCutoffTime(timeRange: TimeRange): Date {
   const now = Date.now();
   const ranges = {
-    "1m": 2 * 60 * 1000, // 2 minutes (more lenient for testing)
+    "1m": 2 * 60 * 1000,
     "1h": 60 * 60 * 1000,
     "24h": 24 * 60 * 60 * 1000,
     "7d": 7 * 24 * 60 * 60 * 1000,

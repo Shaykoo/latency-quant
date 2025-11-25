@@ -17,12 +17,14 @@ type Marker = {
   region: string;
 };
 
+//latency feed
 type LatencyFeedState = {
   status: "connecting" | "streaming" | "error";
   markers: Marker[];
-  aggregated: LatencyFrame["aggregated"] | null;
+  aggregated: LatencyFrame["aggregated"] | null; // Min/max/avg/p95 
   lastUpdated: Date | null;
   errorMessage: string | null;
+  //Action
   setFrame: (frame: LatencyFrame) => void;
   setError: (message: string) => void;
 };

@@ -16,19 +16,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Quant Test • Latency Intelligence",
+  title: "Latency Topology Visualizer",
   description:
     "Observe global exchange latency in real time with a 3D globe, structured telemetry, and accessible controls.",
   metadataBase: new URL("https://quant-test.local"),
   openGraph: {
-    title: "Quant Test • Latency Intelligence",
+    title: "GoQuant Test • Latency Topology Visualizer",
     description:
       "Realtime latency telemetry rendered on a cinematic, accessible 3D globe.",
     images: ["/opengraph-image.png"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Quant Test • Latency Intelligence",
+    title: "GoQuant Test • Latency Topology Visualizer",
     description:
       "Realtime latency telemetry rendered on a cinematic, accessible 3D globe.",
   },

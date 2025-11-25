@@ -6,7 +6,7 @@ import { DashboardFooterClient } from "./footer-client";
 import { DashboardLayoutClient } from "./layout-client";
 
 export const metadata: Metadata = {
-  title: "Dashboard • Quant Test Latency Intelligence",
+  title: "Dashboard • Latency Topology Visualizer",
 };
 
 type DashboardLayoutProps = {

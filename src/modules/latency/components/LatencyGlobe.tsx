@@ -21,8 +21,8 @@ export const MarkerHoverContext = createContext<{
 });
 
 export function LatencyGlobe() {
-  useLatencyStream();
-  const theme = useTheme((state) => state.theme);
+  useLatencyStream(); // connects to SSE streams
+  const theme = useTheme((state) => state.theme); // renders 3D scene
   const isDark = theme === "dark";
 
   const [mounted, setMounted] = useState(false);

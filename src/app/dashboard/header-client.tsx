@@ -45,14 +45,14 @@ export function DashboardHeaderClient() {
                 isDark ? "text-slate-400" : "text-slate-600"
               }`}
             >
-              Quant Test
+              GoQuant Test
             </p>
             <p
               className={`text-sm sm:text-base md:text-lg font-semibold truncate ${
                 isDark ? "text-slate-100" : "text-slate-900"
               }`}
             >
-              Latency Intelligence
+              Latency Topology Visualizer
             </p>
           </div>
         </div>
