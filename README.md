@@ -229,8 +229,6 @@ src/
 - Heatmap uses Gaussian falloff for smooth color transitions
 
 ## 🔗 Links
-
-- **GitHub Repository**: [https://github.com/Shaykoo/Latency-Intelligence](https://github.com/Shaykoo/Latency-Intelligence)
 - **Next.js Documentation**: [https://nextjs.org/docs](https://nextjs.org/docs)
 - **React Three Fiber**: [https://docs.pmnd.rs/react-three-fiber](https://docs.pmnd.rs/react-three-fiber)
 
